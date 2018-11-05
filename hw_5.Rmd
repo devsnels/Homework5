@@ -1,6 +1,6 @@
 ---
 title: "hw_5.Rmd"
-author: "Alyssa Melvin"
+author: "Group 1"
 date: "November 5, 2018"
 output: pdf_document
 ---
