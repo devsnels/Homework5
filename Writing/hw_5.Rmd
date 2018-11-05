@@ -6,6 +6,22 @@ output: pdf_document
 ---
 
 ```{r part_3}
+
+library(readr)
+library(dplyr)
+library(sf)
+library(tigris)
+library(forcats)
+
+chicago_homicides <- read_csv("../Data/homicide-data.csv") %>% 
+  filter(city == "Chicago")
+  
+chicago_subdiv <- tracts(state = "IL", cb = TRUE, class = "sf")
+
+
+
+  
+
 ```
 
 ```{r part_4}
