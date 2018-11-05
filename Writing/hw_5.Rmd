@@ -13,6 +13,7 @@ library(sf)
 library(tigris)
 library(forcats)
 library(ggplot2)
+library(viridisLite)
 
 chicago_homicides <- read_csv("../Data/homicide-data.csv") %>% 
   filter(city == "Chicago")
@@ -21,15 +22,18 @@ chicago_homicides <- chicago_homicides %>%
   mutate(unsolved = disposition %in% c("Closed without arrest", 
                                        "Open/No arrest")) %>% 
   mutate(top_3_races = fct_lump(victim_race, n = 3))
+
+chicago_homicides <- st_as_sf(chicago_homicides, coords = c("lat", "lon")) %>% 
+  st_set_crs(4326)
   
-chicago_subdiv <- tracts(state = "IL", cb = TRUE, class = "sf") %>% 
-  filter(COUNTYFP == "031")
+chicago_subdiv <- tracts(state = "IL", cb = TRUE, class = "sf")
+
 
 ggplot() +
   geom_sf(data = chicago_subdiv, fill = "lightgray") +
-  geom_sf(data = chicago_homicides, aes(geometry = lat, lon)) +
-  theme_dark() +
-  scale_fill_viridis_c(name = "Race of Victims") +
+  geom_sf(data = chicago_homicides, aes(fill = top_3_races)) +
+  xlim(c(-89, -87.5)) + 
+  ylim(c(41, 42.5)) +
   facet_wrap(~ unsolved)
 
 
