@@ -5,3 +5,11 @@ date: "November 5, 2018"
 output: pdf_document
 ---
 
+```{r part_3}
+```
+
+```{r part_4}
+```
+
+```{r part_5}
+```
