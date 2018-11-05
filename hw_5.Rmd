@@ -1,6 +1,6 @@
 ---
 title: "hw_5.Rmd"
-author: "Group 1"
+author: "Kyle Root"
 date: "November 5, 2018"
 output: pdf_document
 ---
