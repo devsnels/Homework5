@@ -19,15 +19,20 @@ homicides <- homicides %>%
          -disposition) %>% 
   filter(lon != "NA")
 
-us_states <- map("state", plot = FALSE, fill = TRUE) %>% 
+#us_states <- map("state", plot = FALSE, fill = TRUE) %>% 
+  #st_as_sf()
+
+#map_homicides <- st_as_sf(homicides, coords = c("lon", "lat")) %>% 
+  #st_set_crs(4269)
+
+#ggplot() +
+  #geom_sf(data = us_states,
+          #color = "white",
+          #fill = "darkcyan",
+          #alpha = 0.5) +
+  #geom_sf(data = map_homicides, aes(color = victim_sex, shape = victim_race))
+
+il_map <- map(state = "illinois",
+              plot = FALSE,
+              fill = TRUE) %>% 
   st_as_sf()
-
-map_homicides <- st_as_sf(homicides, coords = c("lon", "lat")) %>% 
-  st_set_crs(4269)
-
-ggplot() +
-  geom_sf(data = us_states,
-          color = "white",
-          fill = "darkcyan",
-          alpha = 0.5) +
-  geom_sf(data = map_homicides, aes(color = victim_sex, shape = victim_race))
