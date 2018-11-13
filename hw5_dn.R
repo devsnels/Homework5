@@ -60,12 +60,9 @@ homicideplot <- homicide %>%
   labs(x = "Date", y = "Monthly Homicides") +
   ggtitle("Homicides in Baltimore, MD") +
   scale_x_discrete(breaks=c("1_2008", "1_2010", "1_2012", "1_2014", "1_2016", "1_2018"),
-                   labels=c("2008", "2010", "2012", "2014", "2016", "2018")) +
-  geom_vline(x = 4_2015, color = "red") +
-  geom_text(aes(x = "4_2015", "The arrest of Freddie Grey"))
-  
-?geom_vline  
+                   labels=c("2008", "2010", "2012", "2014", "2016", "2018")) 
 
+  
 homicideplot
 
 
