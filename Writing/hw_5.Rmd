@@ -15,28 +15,31 @@ library(forcats)
 library(ggplot2)
 library(viridisLite)
 
-chicago_homicides <- read_csv("../Data/homicide-data.csv") %>% 
-  filter(city == "Chicago")
+chicago_homicides <- read_csv("../Data/homicide-data.csv")
+  
 
 chicago_homicides <- chicago_homicides %>% 
+  filter(city == "Chicago") %>% 
   mutate(unsolved = disposition %in% c("Closed without arrest", 
                                        "Open/No arrest")) %>% 
-  mutate(top_3_races = fct_lump(victim_race, n = 3))
+  mutate(top_3_races = fct_lump(victim_race, n = 3)) %>% 
+  filter(!is.na(lat)) %>% 
+  filter(!is.na(lon))
 
 chicago_homicides <- st_as_sf(chicago_homicides, coords = c("lat", "lon")) %>% 
-  st_set_crs(4326)
+  st_set_crs(4267)
   
 chicago_subdiv <- tracts(state = "IL", cb = TRUE, class = "sf")
 
 
-ggplot() +
+ggplot(chicago_homicides) +
   geom_sf(data = chicago_subdiv, fill = "lightgray") +
-  geom_sf(data = chicago_homicides, aes(fill = top_3_races)) +
+  geom_sf(data = chicago_homicides, aes(color = top_3_races)) +
   xlim(c(-87.8, -87.5)) + 
   ylim(c(41.6, 42)) +
   facet_wrap(~ unsolved)
 
-
+#I can't seem to get the dots to show up on the map. Could be do the "st_set_sf" number, because I have no idea what number I need to select. I've tried a few different ones but it doesn't work.
   
 
 ```
