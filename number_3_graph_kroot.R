@@ -32,6 +32,10 @@ homicides %>%
                fill = victim_sex)) +
   scale_fill_discrete(name = "Gender",
                       breaks = c("Male", "Female", "Unknown")) +
+  scale_x_discrete(limits = c("Black", "Hispanic", "White", "Asian", "Other", "Unknown")) +
+  labs(x = "Race",
+         y = "Homicide counts",
+         title = "Number of unsolved homicides by race and gender") +
   theme_tufte()
   
 #us_states <- map("state", plot = FALSE, fill = TRUE) %>% 
