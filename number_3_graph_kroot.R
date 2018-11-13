@@ -2,6 +2,7 @@ library(tidyverse)
 library(lubridate)
 library(sf)
 library(maps)
+library(ggthemes)
 
 homicides <- read_csv("data/homicide-data.csv")
 head(homicides, 10)
@@ -16,9 +17,23 @@ homicides <- homicides %>%
   select(-uid,
          -victim_last,
          -victim_first,
-         -disposition) %>% 
-  filter(lon != "NA")
+         -disposition)
 
+head(homicides)
+
+homicides %>% 
+  ggplot() +
+  geom_bar(aes(x = victim_race, fill = unsolved))
+
+homicides %>% 
+  filter(unsolved == TRUE) %>% 
+  ggplot() +
+  geom_bar(aes(x = victim_race,
+               fill = victim_sex)) +
+  scale_fill_discrete(name = "Gender",
+                      breaks = c("Male", "Female", "Unknown")) +
+  theme_tufte()
+  
 #us_states <- map("state", plot = FALSE, fill = TRUE) %>% 
   #st_as_sf()
 
