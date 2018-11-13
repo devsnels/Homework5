@@ -3,6 +3,7 @@ library(lubridate)
 library(sf)
 library(maps)
 library(ggthemes)
+library(viridis)
 
 homicides <- read_csv("data/homicide-data.csv")
 head(homicides, 10)
@@ -22,36 +23,14 @@ homicides <- homicides %>%
 head(homicides)
 
 homicides %>% 
-  ggplot() +
-  geom_bar(aes(x = victim_race, fill = unsolved))
-
-homicides %>% 
   filter(unsolved == TRUE) %>% 
   ggplot() +
   geom_bar(aes(x = victim_race,
                fill = victim_sex)) +
-  scale_fill_discrete(name = "Gender",
-                      breaks = c("Male", "Female", "Unknown")) +
   scale_x_discrete(limits = c("Black", "Hispanic", "White", "Asian", "Other", "Unknown")) +
   labs(x = "Race",
          y = "Homicide counts",
          title = "Number of unsolved homicides by race and gender") +
-  theme_tufte()
-  
-#us_states <- map("state", plot = FALSE, fill = TRUE) %>% 
-  #st_as_sf()
-
-#map_homicides <- st_as_sf(homicides, coords = c("lon", "lat")) %>% 
-  #st_set_crs(4269)
-
-#ggplot() +
-  #geom_sf(data = us_states,
-          #color = "white",
-          #fill = "darkcyan",
-          #alpha = 0.5) +
-  #geom_sf(data = map_homicides, aes(color = victim_sex, shape = victim_race))
-
-il_map <- map(state = "illinois",
-              plot = FALSE,
-              fill = TRUE) %>% 
-  st_as_sf()
+  theme_tufte() +
+  scale_fill_viridis_d(name = "Gender",
+                       breaks = c("Male", "Female", "Unknown"))
