@@ -13,8 +13,6 @@ library(sf)
 library(tigris)
 library(forcats)
 library(ggplot2)
-library(viridisLite)
-library(ggthemes)
 
 chicago_homicides <- read_csv("../Data/homicide-data.csv")
   
@@ -34,7 +32,7 @@ chicago_subdiv <- tracts(state = "IL", cb = TRUE, class = "sf")
 
 
 ggplot(chicago_homicides) +
-  geom_sf(data = chicago_subdiv, fill = "lightgray") +
+  geom_sf(data = chicago_subdiv) +
   geom_sf(data = chicago_homicides, aes(color = top_3_races)) +
   xlim(c(-87.8, -87.5)) + 
   ylim(c(41.6, 42)) +
