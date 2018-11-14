@@ -5,3 +5,77 @@ date: "November 5, 2018"
 output: pdf_document
 ---
 
+```{r part_3}
+
+library(readr)
+library(dplyr)
+library(sf)
+library(tigris)
+library(forcats)
+library(ggplot2)
+library(viridisLite)
+library(ggthemes)
+
+chicago_homicides <- read_csv("../Data/homicide-data.csv")
+  
+
+chicago_homicides <- chicago_homicides %>% 
+  filter(city == "Chicago") %>% 
+  mutate(unsolved = disposition %in% c("Closed without arrest", 
+                                       "Open/No arrest")) %>% 
+  mutate(top_3_races = fct_lump(victim_race, n = 3)) %>% 
+  filter(!is.na(lat)) %>% 
+  filter(!is.na(lon))
+
+chicago_homicides <- st_as_sf(chicago_homicides, coords = c("lat", "lon")) %>% 
+  st_set_crs(4267)
+  
+chicago_subdiv <- tracts(state = "IL", cb = TRUE, class = "sf")
+
+
+ggplot(chicago_homicides) +
+  geom_sf(data = chicago_subdiv, fill = "lightgray") +
+  geom_sf(data = chicago_homicides, aes(color = top_3_races)) +
+  xlim(c(-87.8, -87.5)) + 
+  ylim(c(41.6, 42)) +
+  facet_wrap(~ unsolved)
+
+#I can't seem to get the dots to show up on the map. Could be do the "st_set_sf" number, because I have no idea what number I need to select. I've tried a few different ones but it doesn't work.
+  
+
+```
+
+```{r part_4}
+```
+
+```{r part_5}
+library(viridis)
+
+homicides <- read_csv("../data/homicide-data.csv")
+
+homicides <- homicides %>% 
+  mutate(unsolved = disposition == "Closed without arrest" | disposition == "Open/No arrest",
+         reported_date = date(ymd(reported_date))) %>%
+  unite(city_name,
+        city,
+        state,
+        sep = ", ") %>% 
+  select(-uid,
+         -victim_last,
+         -victim_first,
+         -disposition)
+
+homicides %>% 
+  filter(unsolved == TRUE) %>% 
+  ggplot() +
+  geom_bar(aes(x = victim_race,
+               fill = victim_sex)) +
+  scale_x_discrete(limits = c("Black", "Hispanic", "White", "Asian", "Other", "Unknown")) +
+  labs(x = "Race",
+         y = "Homicide counts",
+         title = "Number of unsolved homicides by race and gender") +
+  theme_tufte() +
+  scale_fill_viridis_d(name = "Gender",
+                       breaks = c("Male", "Female", "Unknown"))
+```
+Group 5 was curious about the amount of unsolved homicides in regards to race and gender.  The above graph was generated to explore this question.  The data was ordered from the highest count of unsolved homicides to the lowest count of unsolved homicides by race.  A stacked bargraph was used to depict the relative amount of female to male unsolved homicides for each race.  The results of the graph are very striking in that unsolved homicides of black men appear to far outnumber any of the other races or female homicides.  Furthermore, males made up the majority of unsolved homicides for each race.  It is interesting to note that outside of the three highest races (black, hispanic, and white), asian and other races returned very minimal counts of unsolved homicides.  Further investigation may be necessary to control for confounding including the relative population of each race by city. 
