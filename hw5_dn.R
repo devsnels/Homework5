@@ -24,6 +24,7 @@ homicide <- homicide %>%
   select(reported_date, cityname, victim_last, victim_first) %>% 
   filter(cityname == "Baltimore, MD") %>% 
   mutate(reported_date = ymd(reported_date)) %>% 
+  mutate(reported_date = floor_date(reported_date, unit = "month")) %>% 
   mutate(year = year(reported_date),
          month = month(reported_date)) %>% 
   mutate(season = recode(month, 
@@ -39,30 +40,23 @@ homicide <- homicide %>%
                          '2' = 'winter',
                          '3' = 'winter',
                          '4' = 'winter')) %>% 
-  group_by(year, month, season) %>% 
+  group_by(reported_date, year, month, season) %>% 
   count() %>% 
   ungroup () %>% 
-  mutate(yearcopy = year,
-         monthcopy = month) %>% 
-  unite(monthyear, monthcopy, yearcopy) %>% 
   rename("homicide_count" = 'n') %>% 
-  arrange(year, month)
-
-?lubridate
-
-homicide
+  arrange(year, month) %>% 
+  mutate(date_numeric = as.numeric(reported_date))
 
 homicideplot <- homicide %>% 
   ggplot() +
-  geom_col(mapping = aes(x = reorder(month, year), y = homicide_count, fill = season), color = "darkgrey") +
+  geom_col(mapping = aes(x = reported_date, y = homicide_count, fill = season), color = "darkgrey") +
   theme_dark() +
   scale_fill_manual(values=c("lightgrey", "lightblue")) +
   labs(x = "Date", y = "Monthly Homicides") +
   ggtitle("Homicides in Baltimore, MD") +
-  scale_x_discrete(breaks=c("1_2008", "1_2010", "1_2012", "1_2014", "1_2016", "1_2018"),
-                   labels=c("2008", "2010", "2012", "2014", "2016", "2018")) 
-
-  
+  scale_x_date(date_breaks = "2 year", date_labels = "%Y") +
+  geom_vline(xintercept = 16526, colour = "red", linetype = "dashed") +
+  geom_text(x = 16100, y = 35, label = "Arrest of \nFreddie Gray", color = "lightgrey", size = 3)
 homicideplot
 
 
