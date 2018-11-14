@@ -48,13 +48,13 @@ homicide <- homicide %>%
   rename("homicide_count" = 'n') %>% 
   arrange(year, month)
 
-?arrange
+?lubridate
 
 homicide
 
 homicideplot <- homicide %>% 
   ggplot() +
-  geom_col(mapping = aes(x = reorder(monthyear, year, month), y = homicide_count, fill = season), color = "darkgrey") +
+  geom_col(mapping = aes(x = reorder(month, year), y = homicide_count, fill = season), color = "darkgrey") +
   theme_dark() +
   scale_fill_manual(values=c("lightgrey", "lightblue")) +
   labs(x = "Date", y = "Monthly Homicides") +
