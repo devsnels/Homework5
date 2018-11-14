@@ -25,7 +25,7 @@ chicago_homicides <- chicago_homicides %>%
   filter(!is.na(lat)) %>% 
   filter(!is.na(lon))
 
-chicago_homicides <- st_as_sf(chicago_homicides, coords = c("lat", "lon")) %>% 
+chicago_homicides <- st_as_sf(chicago_homicides, coords = c("lon", "lat")) %>% 
   st_set_crs(4267)
   
 chicago_subdiv <- tracts(state = "IL", cb = TRUE, class = "sf")
@@ -33,12 +33,13 @@ chicago_subdiv <- tracts(state = "IL", cb = TRUE, class = "sf")
 
 ggplot(chicago_homicides) +
   geom_sf(data = chicago_subdiv) +
-  geom_sf(data = chicago_homicides, aes(color = top_3_races)) +
+  geom_sf(data = chicago_homicides, aes(color = top_3_races, fill = top_3_races, 
+                                        size = 0.5)) +
   xlim(c(-87.8, -87.5)) + 
   ylim(c(41.6, 42)) +
   facet_wrap(~ unsolved)
 
-#I can't seem to get the dots to show up on the map. Could be do the "st_set_sf" number, because I have no idea what number I need to select. I've tried a few different ones but it doesn't work.
+
   
 
 ```
