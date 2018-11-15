@@ -5,14 +5,35 @@ date: "November 5, 2018"
 output: pdf_document
 ---
 
-```{r part_3}
-
+```{r libraries, include = FALSE}
 library(readr)
-library(dplyr)
 library(sf)
 library(tigris)
-library(forcats)
+library(ggplot2)  
+library(dplyr)
+library(stringr)
+library(tidyselect)
 library(ggplot2)
+library(rmarkdown)
+library(RColorBrewer)
+library(knitr)
+library(forcats)
+library(tidyr)
+library(broom)
+library(purrr)
+library(scales)
+library(lubridate)
+library(viridis)
+library(RColorBrewer)
+library(scales)
+library(tidyverse)
+library(ggthemes)
+```
+
+*HW5 Part 1*
+
+```{r part_1, error = FALSE, warning = FALSE, comment = FALSE}
+
 
 chicago_homicides <- read_csv("../Data/homicide-data.csv")
   
@@ -30,7 +51,6 @@ chicago_homicides <- st_as_sf(chicago_homicides, coords = c("lon", "lat")) %>%
   
 chicago_subdiv <- tracts(state = "IL", cb = TRUE, class = "sf")
 
-
 ggplot(chicago_homicides) +
   geom_sf(data = chicago_subdiv) +
   geom_sf(data = chicago_homicides, aes(color = top_3_races, fill = top_3_races, 
@@ -39,20 +59,66 @@ ggplot(chicago_homicides) +
   ylim(c(41.6, 42)) +
   facet_wrap(~ unsolved)
 
+```
 
-  
+*HW5 Part 2*
+
+```{r part_2, fig.width = 20}
+
+homicide <- read_csv('../Data/homicide-data.csv') 
+
+homicide <- homicide %>% 
+  unite(cityname, city, state, sep = ", ") %>% 
+  select(reported_date, cityname, victim_last, victim_first) %>% 
+  filter(cityname == "Baltimore, MD") %>% 
+  mutate(reported_date = ymd(reported_date)) %>% 
+  mutate(reported_date = floor_date(reported_date, unit = "month")) %>% 
+  mutate(year = year(reported_date),
+         month = month(reported_date)) %>% 
+  mutate(season = recode(month, 
+                         '5' = "summer",
+                         '6' = 'summer',
+                         '7' = 'summer',
+                         '8' = 'summer',
+                         '9' = 'summer',
+                         '10' = 'summer',
+                         '11' = 'winter',
+                         '12' = 'winter',
+                         '1' = 'winter',
+                         '2' = 'winter',
+                         '3' = 'winter',
+                         '4' = 'winter')) %>% 
+  group_by(reported_date, year, month, season) %>% 
+  count() %>% 
+  ungroup () %>% 
+  rename("homicide_count" = 'n') %>% 
+  arrange(year, month) %>% 
+  mutate(date_numeric = as.numeric(reported_date))
+
+homicideplot <- homicide %>% 
+  ggplot() +
+  geom_col(mapping = aes(x = reported_date, y = homicide_count, fill = season), color = "darkgrey") +
+  theme_dark() +
+  scale_fill_manual(values=c("lightgrey", "lightblue")) +
+  labs(x = "Date", y = "Monthly Homicides") +
+  ggtitle("Homicides in Baltimore, MD") +
+  scale_x_date(date_breaks = "2 year", date_labels = "%Y") +
+  geom_vline(xintercept = 16526, colour = "red", linetype = "dashed") +
+  geom_text(x = 16100, y = 35, label = "Arrest of \nFreddie Gray", color = "lightgrey", size = 3)
+
+homicideplot
 
 ```
 
-```{r part_4}
-```
+*HW5 Part 3*
+
+Group 5 was curious about the amount of unsolved homicides in regards to race and gender.  The below graph was generated to explore this question.  The data was ordered from the highest count of unsolved homicides to the lowest count of unsolved homicides by race.  A stacked bargraph was used to depict the relative amount of female to male unsolved homicides for each race.  The results of the graph are very striking in that unsolved homicides of black men appear to far outnumber any of the other races or female homicides.  Furthermore, males made up the majority of unsolved homicides for each race.  It is interesting to note that outside of the three highest races (black, hispanic, and white), asian and other races returned very minimal counts of unsolved homicides.  Further investigation may be necessary to control for confounding including the relative population of each race by city. 
 
 ```{r part_5}
-library(viridis)
 
-homicides <- read_csv("../data/homicide-data.csv")
+homicides2 <- read_csv("../Data/homicide-data.csv")
 
-homicides <- homicides %>% 
+homicides2 <- homicides2 %>% 
   mutate(unsolved = disposition == "Closed without arrest" | disposition == "Open/No arrest",
          reported_date = date(ymd(reported_date))) %>%
   unite(city_name,
@@ -64,7 +130,7 @@ homicides <- homicides %>%
          -victim_first,
          -disposition)
 
-homicides %>% 
+homicides2plot <- homicides2 %>% 
   filter(unsolved == TRUE) %>% 
   ggplot() +
   geom_bar(aes(x = victim_race,
@@ -73,8 +139,11 @@ homicides %>%
   labs(x = "Race",
          y = "Homicide counts",
          title = "Number of unsolved homicides by race and gender") +
-  theme_tufte() +
+  #theme_tufte() +
   scale_fill_viridis_d(name = "Gender",
-                       breaks = c("Male", "Female", "Unknown"))
+                       breaks = c("Male", "Female", "Unknown")) 
+
+homicides2plot
 ```
-Group 5 was curious about the amount of unsolved homicides in regards to race and gender.  The above graph was generated to explore this question.  The data was ordered from the highest count of unsolved homicides to the lowest count of unsolved homicides by race.  A stacked bargraph was used to depict the relative amount of female to male unsolved homicides for each race.  The results of the graph are very striking in that unsolved homicides of black men appear to far outnumber any of the other races or female homicides.  Furthermore, males made up the majority of unsolved homicides for each race.  It is interesting to note that outside of the three highest races (black, hispanic, and white), asian and other races returned very minimal counts of unsolved homicides.  Further investigation may be necessary to control for confounding including the relative population of each race by city. 
+
+
