@@ -62,8 +62,7 @@ chicago_subdiv <- tracts(state = "IL", cb = TRUE, class = "sf")
 
 ggplot(chicago_homicides) +
   geom_sf(data = chicago_subdiv) +
-  geom_sf(data = chicago_homicides, aes(color = top_3_races, fill = top_3_races,
-                                        size = 0.25)) +
+  geom_sf(data = chicago_homicides, aes(color = top_3_races, fill = top_3_races), size = 1.5) +
   xlim(c(-87.8, -87.5)) + 
   ylim(c(41.6, 42)) +
   facet_wrap(~ unsolved)
@@ -74,7 +73,7 @@ ggplot(chicago_homicides) +
 
 The team was intersted in understanding how the average number of homicides per month may have changed after the arrest of Freddie Gray. A bar graph with the number of homicides per month was used to depict how the number of homicides changes across time. The arrest of Freddie Gray was marked by a red dashed line. It is apparent that the number of homicides increased on average each month after the arrest of Freddie Gray.
 
-```{r part_2, fig.width = 20, fig.height = 5}
+```{r part_2}
 
 homicide <- read_csv('../Data/homicide-data.csv') 
 
@@ -109,15 +108,21 @@ homicide <- homicide %>%
 homicideplot <- homicide %>% 
   ggplot() +
   geom_col(mapping = aes(x = reported_date, y = homicide_count, fill = season), color = "darkgrey") +
-  geom_smooth(aes(x = reported_date, y = homicide_count), se = FALSE) +
+  geom_smooth(aes(x = reported_date, y = homicide_count), method = "loess", se = FALSE, span = 0.1) +
   theme_dark() +
   scale_fill_manual(values=c("lightgrey", "lightblue")) +
   labs(x = "Date", y = "Monthly Homicides") +
   ggtitle("Homicides in Baltimore, MD") +
   scale_x_date(date_breaks = "2 year", date_labels = "%Y") +
   geom_vline(xintercept = 16526, colour = "red", linetype = "dashed", size = 1) +
-  geom_text(x = 16400, y = 35, label = "Arrest of \nFreddie Gray", color = "lightgrey", size = 4)
-  
+  geom_text(x = 16400, y = 35, label = "Arrest of \nFreddie Gray", color = "lightgrey", size = 4) +
+  theme(legend.position='bottom')
+
+
+```
+
+
+```{r show plot2, fig.width = 20, fig.height = 5 }  
 
 homicideplot
 
