@@ -50,14 +50,17 @@ homicide <- homicide %>%
 homicideplot <- homicide %>% 
   ggplot() +
   geom_col(mapping = aes(x = reported_date, y = homicide_count, fill = season), color = "darkgrey") +
+  geom_smooth(aes(x = reported_date, y = homicide_count), method = "loess", se = FALSE, span = 0.1) +
   theme_dark() +
   scale_fill_manual(values=c("lightgrey", "lightblue")) +
   labs(x = "Date", y = "Monthly Homicides") +
   ggtitle("Homicides in Baltimore, MD") +
   scale_x_date(date_breaks = "2 year", date_labels = "%Y") +
-  geom_vline(xintercept = 16526, colour = "red", linetype = "dashed") +
-  geom_text(x = 16100, y = 35, label = "Arrest of \nFreddie Gray", color = "lightgrey", size = 3)
+  geom_vline(xintercept = 16526, colour = "red", linetype = "dashed", size = 1) +
+  geom_text(x = 16400, y = 35, label = "Arrest of \nFreddie Gray", color = "lightgrey", size = 4) +
+  theme(legend.position='bottom')
+
+
 homicideplot
 
-
-
+?geom_smooth
