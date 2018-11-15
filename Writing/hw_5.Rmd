@@ -123,7 +123,7 @@ homicideplot
 
 Group 5 was curious about the amount of unsolved homicides in regards to race and gender.  The below graph was generated to explore this question.  The data was ordered from the highest count of unsolved homicides to the lowest count of unsolved homicides by race.  A stacked bargraph was used to depict the relative amount of female to male unsolved homicides for each race.  The results of the graph are very striking in that unsolved homicides of black men appear to far outnumber any of the other races or female homicides.  Furthermore, males made up the majority of unsolved homicides for each race.  It is interesting to note that outside of the three highest races (black, hispanic, and white), asian and other races returned very minimal counts of unsolved homicides.  Further investigation may be necessary to control for confounding including the relative population of each race by city. 
 
-```{r part_5}
+```{r part_5a, message = FALSE, warning = FALSE}
 
 homicides2 <- read_csv("../Data/homicide-data.csv")
 
@@ -138,7 +138,9 @@ homicides2 <- homicides2 %>%
          -victim_last,
          -victim_first,
          -disposition)
+```
 
+```{r part_5b, warning = FALSE, message = FALSE}
 homicides2plot <- homicides2 %>% 
   filter(unsolved == TRUE) %>% 
   ggplot() +
@@ -148,7 +150,7 @@ homicides2plot <- homicides2 %>%
   labs(x = "Race",
          y = "Homicide counts",
          title = "Number of unsolved homicides by race and gender") +
-  #theme_tufte() +
+  theme_tufte() +
   scale_fill_viridis_d(name = "Gender",
                        breaks = c("Male", "Female", "Unknown")) 
 
