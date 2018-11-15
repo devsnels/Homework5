@@ -5,6 +5,12 @@ date: "November 5, 2018"
 output: pdf_document
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, error = FALSE, comment = FALSE)
+options(readr.show_progress = FALSE)
+```
+
+
 ```{r libraries, include = FALSE}
 library(readr)
 library(sf)
@@ -32,7 +38,7 @@ library(ggthemes)
 
 *HW5 Part 1*
 
-```{r part_1, error = FALSE, warning = FALSE, comment = FALSE}
+```{r part_1, results = "hide"}
 
 
 chicago_homicides <- read_csv("../Data/homicide-data.csv")
@@ -50,6 +56,9 @@ chicago_homicides <- st_as_sf(chicago_homicides, coords = c("lon", "lat")) %>%
   st_set_crs(4267)
   
 chicago_subdiv <- tracts(state = "IL", cb = TRUE, class = "sf")
+```
+
+```{r show plot}
 
 ggplot(chicago_homicides) +
   geom_sf(data = chicago_subdiv) +
