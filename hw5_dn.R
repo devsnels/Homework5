@@ -63,4 +63,6 @@ homicideplot <- homicide %>%
 
 homicideplot
 
+?scale_x_continuous
+
 ?geom_smooth
