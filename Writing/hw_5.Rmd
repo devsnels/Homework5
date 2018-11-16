@@ -30,6 +30,7 @@ library(purrr)
 library(scales)
 library(lubridate)
 library(viridis)
+library(viridisLite)
 library(RColorBrewer)
 library(scales)
 library(tidyverse)
@@ -48,6 +49,8 @@ chicago_homicides <- chicago_homicides %>%
   filter(city == "Chicago") %>% 
   mutate(unsolved = disposition %in% c("Closed without arrest", 
                                        "Open/No arrest")) %>% 
+  mutate(unsolved, ifelse(unsolved == "FALSE", "Solved", "Unsolved")) %>% 
+  rename(solved_unsolved = "ifelse(unsolved == \"FALSE\", \"Solved\", \"Unsolved\")") %>% 
   mutate(top_3_races = fct_lump(victim_race, n = 3)) %>% 
   filter(!is.na(lat)) %>% 
   filter(!is.na(lon))
@@ -56,16 +59,20 @@ chicago_homicides <- st_as_sf(chicago_homicides, coords = c("lon", "lat")) %>%
   st_set_crs(4267)
   
 chicago_subdiv <- tracts(state = "IL", cb = TRUE, class = "sf")
+
+
 ```
 
 ```{r show plot}
 
 ggplot(chicago_homicides) +
   geom_sf(data = chicago_subdiv) +
-  geom_sf(data = chicago_homicides, aes(color = top_3_races, fill = top_3_races), size = 1.5) +
+  geom_sf(data = chicago_homicides, aes(color = top_3_races, fill = top_3_races), 
+          size = 1.5) +
   xlim(c(-87.8, -87.5)) + 
   ylim(c(41.6, 42)) +
-  facet_wrap(~ unsolved)
+  facet_wrap(~ solved_unsolved)
+  
 
 ```
 
