@@ -1,5 +1,5 @@
 ---
-title: "hw_5.Rmd"
+title: "Homework 5"
 author: "Group 1"
 date: "November 5, 2018"
 output: pdf_document
