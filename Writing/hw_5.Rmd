@@ -67,11 +67,15 @@ chicago_subdiv <- tracts(state = "IL", cb = TRUE, class = "sf")
 
 ggplot(chicago_homicides) +
   geom_sf(data = chicago_subdiv) +
-  geom_sf(data = chicago_homicides, aes(color = top_3_races, fill = top_3_races), 
+  geom_sf(data = chicago_homicides, aes(color = top_3_races, fill = top_3_races),
           size = 1.5) +
-  xlim(c(-87.8, -87.5)) + 
+  #scale_x_continuous(breaks = 2, limits = c(-87.8, -87.5)) +
+  #xlim(c(-87.8, -87.5)) + 
   ylim(c(41.6, 42)) +
-  facet_wrap(~ solved_unsolved)
+  facet_wrap(~ solved_unsolved) +
+  labs(color = "Race of Victim", fill = "Race of Victim") +
+  ggtitle("Location of Murders in Chicago by Race")
+  
   
 
 ```
